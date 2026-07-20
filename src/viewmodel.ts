@@ -104,19 +104,27 @@ export const getViewmodelTransform = (
   settings: ViewmodelSettings,
   hand: Hand,
 ) => {
-  const fovDelta = settings.fov - DEFAULT_SETTINGS.fov
   const xDelta = settings.x - DEFAULT_SETTINGS.x
   const yDelta = settings.y - DEFAULT_SETTINGS.y
   const zDelta = settings.z - DEFAULT_SETTINGS.z
 
-  const scale = 1 - fovDelta * 0.032 + yDelta * -0.04
-  const x = xDelta * 30 + yDelta * 8
-  const y = zDelta * -32 + yDelta * 16
+  // Perspective scaling follows the same tangent relationship used by a
+  // viewmodel camera. Offset Y changes depth, while X and Z move the model
+  // across the screen. Percentage translations keep this consistent at every
+  // preview size instead of making mobile movement disproportionately large.
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+  const fovScale =
+    Math.tan(toRadians(DEFAULT_SETTINGS.fov) / 2) /
+    Math.tan(toRadians(settings.fov) / 2)
+  const depthScale = 1 - yDelta * 0.04
+  const scale = fovScale * depthScale
+  const x = xDelta * 2.8
+  const y = zDelta * -3.2
 
   return {
-    '--vm-scale': Math.max(0.55, Math.min(1.32, scale)),
-    '--vm-x': `${x}px`,
-    '--vm-y': `${y}px`,
+    '--vm-scale': Math.max(0.74, Math.min(1.48, scale)),
+    '--vm-x': `${x}%`,
+    '--vm-y': `${y}%`,
     '--vm-mirror': hand === 'left' ? '-1' : '1',
   }
 }
