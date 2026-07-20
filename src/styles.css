@@ -1701,6 +1701,11 @@ button.preset-card:hover,
     left: 12px;
   }
 
+  .preview-canvas.hand-left .preview-readout {
+    right: 12px;
+    left: auto;
+  }
+
   .preview-readout span {
     min-width: 45px;
     padding: 6px;
