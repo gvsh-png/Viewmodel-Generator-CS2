@@ -91,6 +91,12 @@ export interface PreviewOptions {
   exposure: number
 }
 
+export interface ViewmodelCommand {
+  name: string
+  command: string
+  value?: string
+}
+
 export const formatValue = (value: number) => {
   if (Number.isInteger(value)) return String(value)
   return value.toFixed(1).replace(/\.0$/, '')
@@ -100,10 +106,7 @@ export const getCanvasStyle = (exposure: number) => ({
   '--preview-exposure': exposure / 100,
 })
 
-export const getViewmodelTransform = (
-  settings: ViewmodelSettings,
-  hand: Hand,
-) => {
+export const getViewmodelTransform = (settings: ViewmodelSettings) => {
   const xDelta = settings.x - DEFAULT_SETTINGS.x
   const yDelta = settings.y - DEFAULT_SETTINGS.y
   const zDelta = settings.z - DEFAULT_SETTINGS.z
@@ -127,14 +130,13 @@ export const getViewmodelTransform = (
     '--vm-scale': Math.max(0.64, Math.min(1.12, scale)),
     '--vm-x': `${x}%`,
     '--vm-y': `${y}%`,
-    '--vm-mirror': hand === 'left' ? '-1' : '1',
   }
 }
 
 export const getCommands = (
   settings: ViewmodelSettings,
   options?: Pick<PreviewOptions, 'hand'>,
-) => [
+): ViewmodelCommand[] => [
   {
     name: 'Custom position',
     command: 'viewmodel_presetpos',
@@ -162,19 +164,19 @@ export const getCommands = (
   },
   {
     name: options?.hand === 'left' ? 'Left hand' : 'Right hand',
-    command: 'cl_righthand',
-    value: options?.hand === 'left' ? '0' : '1',
+    command: options?.hand === 'left' ? 'switchhandsleft' : 'switchhandsright',
   },
 ]
+
+const formatCommand = ({ command, value }: ViewmodelCommand) =>
+  value === undefined ? command : `${command} ${value}`
 
 export const getConsoleLine = (
   settings: ViewmodelSettings,
   writeConfig = false,
   options?: Pick<PreviewOptions, 'hand'>,
 ) => {
-  const commands = getCommands(settings, options).map(
-    ({ command, value }) => `${command} ${value}`,
-  )
+  const commands = getCommands(settings, options).map(formatCommand)
 
   if (writeConfig) commands.push('host_writeconfig')
   return commands.join('; ')
@@ -188,7 +190,7 @@ export const getConfigBlock = (
   const lines = [
     '// Viewmodel Lab — CS2 viewmodel',
     ...getCommands(settings, options).map(
-      ({ name, command, value }) => `${command} ${value} // ${name}`,
+      (entry) => `${formatCommand(entry)} // ${entry.name}`,
     ),
   ]
 

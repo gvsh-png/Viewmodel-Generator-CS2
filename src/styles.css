@@ -945,7 +945,11 @@ button.preset-card:hover,
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
+  transform-origin: 100% 100%;
+  transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
+  transition: transform 140ms ease;
+  will-change: transform;
 }
 
 .viewmodel-sprite {
@@ -956,21 +960,22 @@ button.preset-card:hover,
   height: 122.222%;
   max-width: none;
   object-fit: fill;
-  transform-origin: 100% 81.818%;
-  transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
-  transition: transform 140ms ease;
-  will-change: transform;
+  transform-origin: center;
   image-rendering: auto;
 }
 
-.preview-canvas.hand-left .viewmodel-sprite {
-  transform-origin: 0 81.818%;
+.preview-canvas.hand-left .viewmodel-layer {
+  transform-origin: 0 100%;
   transform: translate3d(calc(var(--vm-x) * -1), var(--vm-y), 0)
-    scaleX(var(--vm-mirror)) scale(var(--vm-scale));
+    scale(var(--vm-scale));
 }
 
-.preview-canvas.hand-right .viewmodel-sprite {
+.preview-canvas.hand-right .viewmodel-layer {
   transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
+}
+
+.preview-canvas.hand-left .viewmodel-sprite {
+  transform: scaleX(-1);
 }
 
 .canvas-shade {

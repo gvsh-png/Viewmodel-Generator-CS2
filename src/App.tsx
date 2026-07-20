@@ -209,8 +209,8 @@ function App() {
     [exposure],
   )
   const viewmodelStyle = useMemo(
-    () => getViewmodelTransform(settings, hand) as CSSProperties,
-    [settings, hand],
+    () => getViewmodelTransform(settings) as CSSProperties,
+    [settings],
   )
 
   useEffect(() => {
@@ -476,7 +476,8 @@ function App() {
                 ))}
               </div>
               <small className="option-note">
-                Preview only · use <code>switchhands</code> in-game
+                Uses <code>switchhandsleft</code> or{' '}
+                <code>switchhandsright</code> in-game
               </small>
             </div>
 
@@ -763,20 +764,20 @@ function App() {
                   <small>{commands.length} ACTIVE</small>
                 </div>
                 {commands.map(({ name, command, value }) => {
-                  const target = `${command}-${value}`
+                  const commandText =
+                    value === undefined ? command : `${command} ${value}`
+                  const target = `${command}-${value ?? ''}`
                   return (
                     <button
                       type="button"
                       key={command}
-                      onClick={() =>
-                        copyText(`${command} ${value}`, target)
-                      }
+                      onClick={() => copyText(commandText, target)}
                     >
                       <span>
                         <small>{name}</small>
                         <code>{command}</code>
                       </span>
-                      <b>{value}</b>
+                      <b>{value ?? 'RUN'}</b>
                       {copied === target ? (
                         <Check size={14} />
                       ) : (
