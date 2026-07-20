@@ -1738,6 +1738,7 @@ button.preset-card:hover,
   .workspace {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
   }
 
   .main-stage {
@@ -1818,7 +1819,8 @@ button.preset-card:hover,
   .canvas-wrap.ratio-16-10,
   .canvas-wrap.ratio-4-3 {
     width: 100%;
-    min-height: 360px;
+    height: 360px;
+    min-height: 0;
     aspect-ratio: auto;
     border-right: 0;
     border-left: 0;
