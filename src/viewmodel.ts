@@ -25,8 +25,6 @@ export const DEFAULT_SETTINGS: ViewmodelSettings = {
 export const PREVIEW = {
   background: '/assets/game-bg.jpg',
   viewmodel: '/assets/rifle-viewmodel.png',
-  scene: 'Inferno · Banana',
-  source: 'Official CS2 media',
   weapon: 'AK-47',
 }
 

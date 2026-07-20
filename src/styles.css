@@ -950,27 +950,28 @@ button.preset-card:hover,
 
 .viewmodel-sprite {
   position: absolute;
-  right: -3%;
-  bottom: -10%;
-  width: 88%;
+  right: -2%;
+  bottom: -8%;
+  width: 86%;
   max-width: none;
   height: auto;
   transform-origin: 92% 94%;
-  transform: translate(var(--vm-x), var(--vm-y)) scale(var(--vm-scale));
+  transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
   transition: transform 140ms ease;
   will-change: transform;
+  image-rendering: auto;
 }
 
 .preview-canvas.hand-left .viewmodel-sprite {
   right: auto;
-  left: -1%;
-  transform-origin: 12% 94%;
-  transform: translate(calc(var(--vm-x) * -1), var(--vm-y))
+  left: -2%;
+  transform-origin: 8% 94%;
+  transform: translate3d(calc(var(--vm-x) * -1), var(--vm-y), 0)
     scaleX(var(--vm-mirror)) scale(var(--vm-scale));
 }
 
 .preview-canvas.hand-right .viewmodel-sprite {
-  transform: translate(var(--vm-x), var(--vm-y)) scale(var(--vm-scale));
+  transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
 }
 
 .canvas-shade {
@@ -1083,44 +1084,10 @@ button.preset-card:hover,
   border-width: 0 1px 1px 0;
 }
 
-.scene-label {
-  position: absolute;
-  top: 29px;
-  left: 29px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 7px 9px;
-  border-left: 2px solid var(--signal);
-  background: rgba(9, 12, 9, 0.74);
-}
-
-.scene-label span,
 .preview-readout span,
 .preview-disclaimer {
   font-family: 'DM Mono', monospace;
   letter-spacing: 0.06em;
-}
-
-.scene-label span {
-  color: #a2aaa0;
-  font-size: 6px;
-}
-
-.scene-label b {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.scene-label small {
-  color: #8f988d;
-  font-family: 'DM Mono', monospace;
-  font-size: 5px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .preview-readout {
@@ -1737,11 +1704,6 @@ button.preset-card:hover,
 
   .preview-disclaimer {
     display: none;
-  }
-
-  .scene-label {
-    top: 12px;
-    left: 12px;
   }
 
   .corner {

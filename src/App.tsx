@@ -603,11 +603,6 @@ function App() {
                 <div className="corner corner-bl" />
                 <div className="corner corner-br" />
 
-                <div className="scene-label">
-                  <span>SCENE</span>
-                  <b>{PREVIEW.scene}</b>
-                  <small>{PREVIEW.source}</small>
-                </div>
                 <div className="preview-readout">
                   <span>
                     FOV <b>{settings.fov}</b>
