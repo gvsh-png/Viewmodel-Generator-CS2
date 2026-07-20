@@ -1735,6 +1735,27 @@ button.preset-card:hover,
     height: 60px;
   }
 
+  .workspace {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-stage {
+    display: contents;
+  }
+
+  .preview-area {
+    order: 1;
+  }
+
+  .settings-panel {
+    order: 2;
+  }
+
+  .command-panel {
+    order: 3;
+  }
+
   .brand {
     min-width: 0;
     flex: 1;
