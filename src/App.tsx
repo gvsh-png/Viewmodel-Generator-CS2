@@ -591,6 +591,27 @@ function App() {
                   <span>SCENE</span>
                   <b>{WEAPONS[weapon].scene}</b>
                 </div>
+                <div className="scene-switcher">
+                  <span className="scene-switcher-label">
+                    LOADOUT PREVIEWS
+                    <b>03 SHOTS</b>
+                  </span>
+                  {(Object.keys(WEAPONS) as Weapon[]).map((value, index) => (
+                    <button
+                      type="button"
+                      key={value}
+                      className={weapon === value ? 'is-active' : ''}
+                      onClick={() => setWeapon(value)}
+                      aria-label={`Preview ${WEAPONS[value].label}`}
+                    >
+                      <img src={WEAPONS[value].image} alt="" />
+                      <span>
+                        <small>0{index + 1}</small>
+                        {WEAPONS[value].label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
                 <div className="preview-readout">
                   <span>
                     FOV <b>{settings.fov}</b>
