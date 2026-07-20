@@ -35,6 +35,7 @@ import {
   getCommands,
   getConfigBlock,
   getConsoleLine,
+  getPreviewStyle,
   type AspectRatio,
   type Hand,
   type ViewmodelSettings,
@@ -42,6 +43,7 @@ import {
 } from './viewmodel'
 
 type CopyTarget = 'all' | string | null
+type MobileView = 'preview' | 'tune'
 type OutputMode = 'console' | 'cfg'
 
 const STORAGE_KEY = 'viewmodel-lab-saved-preset'
@@ -172,6 +174,7 @@ function App() {
   const [exposure, setExposure] = useState(100)
   const [showReticle, setShowReticle] = useState(true)
   const [showGrid, setShowGrid] = useState(false)
+  const [mobileView, setMobileView] = useState<MobileView>('preview')
   const [writeConfig, setWriteConfig] = useState(false)
   const [outputMode, setOutputMode] = useState<OutputMode>('console')
   const [copied, setCopied] = useState<CopyTarget>(null)
@@ -184,17 +187,28 @@ function App() {
     }
   })
 
-  const commands = useMemo(() => getCommands(settings), [settings])
+  const previewOptions = useMemo(
+    () => ({ hand, exposure }),
+    [hand, exposure],
+  )
+  const commands = useMemo(
+    () => getCommands(settings, previewOptions),
+    [settings, previewOptions],
+  )
   const consoleLine = useMemo(
-    () => getConsoleLine(settings, writeConfig),
-    [settings, writeConfig],
+    () => getConsoleLine(settings, writeConfig, previewOptions),
+    [settings, writeConfig, previewOptions],
   )
   const configBlock = useMemo(
-    () => getConfigBlock(settings, writeConfig),
-    [settings, writeConfig],
+    () => getConfigBlock(settings, writeConfig, previewOptions),
+    [settings, writeConfig, previewOptions],
   )
   const activePreset = getActivePreset(settings)
   const output = outputMode === 'console' ? consoleLine : configBlock
+  const previewStyle = useMemo(
+    () => getPreviewStyle(settings, previewOptions) as CSSProperties,
+    [settings, previewOptions],
+  )
 
   useEffect(() => {
     if (!copied) return
@@ -259,27 +273,22 @@ function App() {
     setExposure(100)
     setShowReticle(true)
     setShowGrid(false)
+    setMobileView('preview')
   }
 
-  const scrollToPositionControls = () => {
+  const showPreview = () => {
+    setMobileView('preview')
+    document
+      .querySelector('.preview-area')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const showTune = () => {
+    setMobileView('tune')
     document
       .getElementById('position-controls')
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-
-  const cycleWeapon = () => {
-    const weapons = Object.keys(WEAPONS) as Weapon[]
-    const currentIndex = weapons.indexOf(weapon)
-    setWeapon(weapons[(currentIndex + 1) % weapons.length])
-  }
-
-  const fovScale = 1 + ((68 - settings.fov) / 14) * 0.04
-  const previewStyle = {
-    '--preview-scale': fovScale,
-    '--preview-x': `${(settings.x - 2.5) * 1.3}px`,
-    '--preview-y': `${(settings.z + 1.5) * -1.1}px`,
-    '--preview-exposure': exposure / 100,
-  } as CSSProperties
 
   return (
     <div className="app-shell">
@@ -672,60 +681,23 @@ function App() {
 
             <div className="mobile-control-deck">
               <div className="mobile-mode-tabs">
-                <button className="is-active" type="button" aria-label="Preview">
+                <button
+                  className={mobileView === 'preview' ? 'is-active' : ''}
+                  type="button"
+                  aria-label="Preview"
+                  onClick={showPreview}
+                >
                   <Eye size={22} />
                   <span>PREVIEW</span>
                 </button>
                 <button
+                  className={mobileView === 'tune' ? 'is-active' : ''}
                   type="button"
                   aria-label="Jump to viewmodel settings"
-                  onClick={scrollToPositionControls}
+                  onClick={showTune}
                 >
                   <SlidersHorizontal size={22} />
                   <span>TUNE</span>
-                </button>
-              </div>
-
-              <button
-                className="mobile-loadout-card"
-                type="button"
-                onClick={cycleWeapon}
-              >
-                <span className="mobile-card-kicker">
-                  REAL CS2 CAPTURE <b>0{(Object.keys(WEAPONS) as Weapon[]).indexOf(weapon) + 1}</b>
-                </span>
-                <span className="mobile-card-image">
-                  <img src={WEAPONS[weapon].image} alt="" />
-                </span>
-                <span className="mobile-card-copy">
-                  <small>{WEAPONS[weapon].detail}</small>
-                  <strong>{WEAPONS[weapon].label}</strong>
-                  <em>{WEAPONS[weapon].source}</em>
-                </span>
-                <ChevronRight size={20} />
-              </button>
-
-              <div className="mobile-safe-row">
-                <span>
-                  <i />
-                  COMPETITIVE SAFE
-                </span>
-                <small>NO SV_CHEATS</small>
-              </div>
-
-              <div className="mobile-stat-cards">
-                <button type="button" onClick={scrollToPositionControls}>
-                  <small>VIEWMODEL FOV</small>
-                  <strong>{settings.fov}</strong>
-                  <span>54—68</span>
-                </button>
-                <button type="button" onClick={scrollToPositionControls}>
-                  <small>OFFSET X / Y / Z</small>
-                  <strong>
-                    {formatValue(settings.x)} / {formatValue(settings.y)} /{' '}
-                    {formatValue(settings.z)}
-                  </strong>
-                  <span>{activePreset?.name ?? 'CUSTOM'}</span>
                 </button>
               </div>
             </div>

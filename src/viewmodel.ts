@@ -114,12 +114,38 @@ export const WEAPONS: Record<
   },
 }
 
+export interface PreviewOptions {
+  hand: Hand
+  exposure: number
+}
+
 export const formatValue = (value: number) => {
   if (Number.isInteger(value)) return String(value)
   return value.toFixed(1).replace(/\.0$/, '')
 }
 
-export const getCommands = (settings: ViewmodelSettings) => [
+export const getPreviewStyle = (
+  settings: ViewmodelSettings,
+  { hand, exposure }: PreviewOptions,
+) => {
+  const fovScale = 1.14 - ((settings.fov - 54) / 14) * 0.28
+  const depthScale = 1 + settings.y * 0.05
+  const offsetX = settings.x * 14
+  const offsetY = settings.z * -16 + settings.y * -10
+
+  return {
+    '--preview-scale': fovScale * depthScale,
+    '--preview-x': `${offsetX}px`,
+    '--preview-y': `${offsetY}px`,
+    '--preview-exposure': exposure / 100,
+    '--preview-origin-x': hand === 'left' ? '22%' : '78%',
+  }
+}
+
+export const getCommands = (
+  settings: ViewmodelSettings,
+  options?: Pick<PreviewOptions, 'hand'>,
+) => [
   {
     name: 'Custom position',
     command: 'viewmodel_presetpos',
@@ -145,13 +171,19 @@ export const getCommands = (settings: ViewmodelSettings) => [
     command: 'viewmodel_offset_z',
     value: formatValue(settings.z),
   },
+  {
+    name: options?.hand === 'left' ? 'Left hand' : 'Right hand',
+    command: 'cl_righthand',
+    value: options?.hand === 'left' ? '0' : '1',
+  },
 ]
 
 export const getConsoleLine = (
   settings: ViewmodelSettings,
   writeConfig = false,
+  options?: Pick<PreviewOptions, 'hand'>,
 ) => {
-  const commands = getCommands(settings).map(
+  const commands = getCommands(settings, options).map(
     ({ command, value }) => `${command} ${value}`,
   )
 
@@ -162,10 +194,11 @@ export const getConsoleLine = (
 export const getConfigBlock = (
   settings: ViewmodelSettings,
   writeConfig = false,
+  options?: Pick<PreviewOptions, 'hand'>,
 ) => {
   const lines = [
     '// Viewmodel Lab — CS2 viewmodel',
-    ...getCommands(settings).map(
+    ...getCommands(settings, options).map(
       ({ name, command, value }) => `${command} ${value} // ${name}`,
     ),
   ]
