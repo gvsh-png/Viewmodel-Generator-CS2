@@ -579,7 +579,7 @@ function App() {
                 <img
                   className="preview-bg"
                   src={PREVIEW.background}
-                  alt="Counter-Strike 2 Inferno gameplay background"
+                  alt="Static game background"
                 />
                 <div className="viewmodel-layer" style={viewmodelStyle}>
                   <img

@@ -117,12 +117,14 @@ export const getViewmodelTransform = (
     Math.tan(toRadians(DEFAULT_SETTINGS.fov) / 2) /
     Math.tan(toRadians(settings.fov) / 2)
   const depthScale = 1 - yDelta * 0.04
-  const scale = fovScale * depthScale
+  // The source is a full-frame screenshot cutout. Keep the rifle itself near
+  // one eighth of the preview at the closest supported configuration.
+  const scale = fovScale * depthScale * 0.58
   const x = xDelta * 2.8
   const y = zDelta * -3.2
 
   return {
-    '--vm-scale': Math.max(0.74, Math.min(1.48, scale)),
+    '--vm-scale': Math.max(0.48, Math.min(0.86, scale)),
     '--vm-x': `${x}%`,
     '--vm-y': `${y}%`,
     '--vm-mirror': hand === 'left' ? '-1' : '1',

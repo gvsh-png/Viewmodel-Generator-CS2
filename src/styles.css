@@ -956,7 +956,7 @@ button.preset-card:hover,
   max-width: none;
   object-fit: cover;
   object-position: center;
-  transform-origin: 88% 100%;
+  transform-origin: 100% 100%;
   transform: translate3d(var(--vm-x), var(--vm-y), 0) scale(var(--vm-scale));
   transition: transform 140ms ease;
   will-change: transform;
@@ -964,7 +964,7 @@ button.preset-card:hover,
 }
 
 .preview-canvas.hand-left .viewmodel-sprite {
-  transform-origin: 12% 100%;
+  transform-origin: 0 100%;
   transform: translate3d(calc(var(--vm-x) * -1), var(--vm-y), 0)
     scaleX(var(--vm-mirror)) scale(var(--vm-scale));
 }
