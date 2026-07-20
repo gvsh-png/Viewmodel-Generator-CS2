@@ -29,17 +29,17 @@ import {
 import {
   DEFAULT_SETTINGS,
   PRESETS,
-  WEAPONS,
+  PREVIEW,
   formatValue,
   getActivePreset,
+  getCanvasStyle,
   getCommands,
   getConfigBlock,
   getConsoleLine,
-  getPreviewStyle,
+  getViewmodelTransform,
   type AspectRatio,
   type Hand,
   type ViewmodelSettings,
-  type Weapon,
 } from './viewmodel'
 
 type CopyTarget = 'all' | string | null
@@ -168,7 +168,6 @@ function BrandMark() {
 function App() {
   const [settings, setSettings] =
     useState<ViewmodelSettings>(DEFAULT_SETTINGS)
-  const [weapon, setWeapon] = useState<Weapon>('knife')
   const [hand, setHand] = useState<Hand>('right')
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9')
   const [exposure, setExposure] = useState(100)
@@ -205,9 +204,13 @@ function App() {
   )
   const activePreset = getActivePreset(settings)
   const output = outputMode === 'console' ? consoleLine : configBlock
-  const previewStyle = useMemo(
-    () => getPreviewStyle(settings, previewOptions) as CSSProperties,
-    [settings, previewOptions],
+  const canvasStyle = useMemo(
+    () => getCanvasStyle(exposure) as CSSProperties,
+    [exposure],
+  )
+  const viewmodelStyle = useMemo(
+    () => getViewmodelTransform(settings, hand) as CSSProperties,
+    [settings, hand],
   )
 
   useEffect(() => {
@@ -267,7 +270,6 @@ function App() {
 
   const resetAll = () => {
     setSettings(DEFAULT_SETTINGS)
-    setWeapon('knife')
     setHand('right')
     setAspectRatio('16:9')
     setExposure(100)
@@ -555,21 +557,10 @@ function App() {
         <div className="main-stage">
           <section className="preview-area" aria-label="Live viewmodel preview">
             <div className="preview-toolbar">
-              <div className="weapon-tabs" role="tablist" aria-label="Weapon">
-                {(Object.keys(WEAPONS) as Weapon[]).map((value, index) => (
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={weapon === value}
-                    className={weapon === value ? 'is-active' : ''}
-                    key={value}
-                    onClick={() => setWeapon(value)}
-                  >
-                    <span>0{index + 1}</span>
-                    <b>{WEAPONS[value].label}</b>
-                    <small>{WEAPONS[value].detail}</small>
-                  </button>
-                ))}
+              <div className="preview-weapon-label">
+                <span>LOADOUT</span>
+                <b>{PREVIEW.weapon}</b>
+                <small>Rifle preview</small>
               </div>
               <div className="preview-meta">
                 <span>
@@ -584,15 +575,19 @@ function App() {
             </div>
 
             <div className={`canvas-wrap ratio-${aspectRatio.replace(':', '-')}`}>
-              <div
-                className={`preview-canvas hand-${hand}`}
-                style={previewStyle}
-              >
+              <div className={`preview-canvas hand-${hand}`} style={canvasStyle}>
                 <img
-                  key={weapon}
-                  src={WEAPONS[weapon].image}
-                  alt={`${WEAPONS[weapon].label} and tactical gloves in a first-person game view`}
+                  className="preview-bg"
+                  src={PREVIEW.background}
+                  alt="Counter-Strike 2 Inferno gameplay background"
                 />
+                <div className="viewmodel-layer" style={viewmodelStyle}>
+                  <img
+                    className="viewmodel-sprite"
+                    src={PREVIEW.viewmodel}
+                    alt="AK-47 viewmodel and gloves"
+                  />
+                </div>
                 <div className="canvas-shade" />
                 {showGrid && <div className="composition-grid" />}
                 {showReticle && (
@@ -610,29 +605,8 @@ function App() {
 
                 <div className="scene-label">
                   <span>SCENE</span>
-                  <b>{WEAPONS[weapon].scene}</b>
-                  <small>{WEAPONS[weapon].source}</small>
-                </div>
-                <div className="scene-switcher">
-                  <span className="scene-switcher-label">
-                    LOADOUT PREVIEWS
-                    <b>03 SHOTS</b>
-                  </span>
-                  {(Object.keys(WEAPONS) as Weapon[]).map((value, index) => (
-                    <button
-                      type="button"
-                      key={value}
-                      className={weapon === value ? 'is-active' : ''}
-                      onClick={() => setWeapon(value)}
-                      aria-label={`Preview ${WEAPONS[value].label}`}
-                    >
-                      <img src={WEAPONS[value].image} alt="" />
-                      <span>
-                        <small>0{index + 1}</small>
-                        {WEAPONS[value].label}
-                      </span>
-                    </button>
-                  ))}
+                  <b>{PREVIEW.scene}</b>
+                  <small>{PREVIEW.source}</small>
                 </div>
                 <div className="preview-readout">
                   <span>
@@ -650,7 +624,7 @@ function App() {
                 </div>
                 <div className="preview-disclaimer">
                   <Info size={12} />
-                  VISUAL APPROXIMATION · VERIFY IN-GAME
+                  VIEWMODEL LAYER APPROXIMATION · VERIFY IN-GAME
                 </div>
               </div>
             </div>
