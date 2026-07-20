@@ -83,25 +83,34 @@ export const PRESETS: ViewmodelPreset[] = [
 
 export const WEAPONS: Record<
   Weapon,
-  { label: string; detail: string; image: string; scene: string }
+  {
+    label: string
+    detail: string
+    image: string
+    scene: string
+    source: string
+  }
 > = {
   knife: {
     label: 'Knife',
-    detail: 'Melee',
-    image: '/assets/knife-preview.png',
-    scene: 'Mediterranean alley',
+    detail: 'Knife + gloves',
+    image: '/assets/knife-preview.jpg',
+    scene: 'Mills yard',
+    source: 'CS2 Steam capture',
   },
   rifle: {
     label: 'Rifle',
-    detail: 'AK platform',
-    image: '/assets/rifle-preview.png',
-    scene: 'Industrial range',
+    detail: 'AK-47',
+    image: '/assets/rifle-preview.jpg',
+    scene: 'Inferno · Banana',
+    source: 'Official CS2 media',
   },
   pistol: {
     label: 'Pistol',
-    detail: 'Sidearm',
-    image: '/assets/pistol-preview.png',
-    scene: 'Stone courtyard',
+    detail: 'Desert Eagle',
+    image: '/assets/pistol-preview.jpg',
+    scene: 'Inspect scene',
+    source: 'CS2 Steam capture',
   },
 }
 

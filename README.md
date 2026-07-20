@@ -25,5 +25,12 @@ npm run dev
 
 Run `npm run build` to type-check and create a production build.
 
-Preview images are visual approximations. Always verify the final position
-in-game before saving it to an autoexec.
+The browser's positional response is an approximation. Always verify the final
+position in-game before saving it to an autoexec.
+
+## Preview imagery
+
+The preview gallery uses real Counter-Strike 2 captures sourced from Valve's
+official Steam store media and CS2 screenshots published through Steam
+Community. They are not AI-generated stand-ins. Counter-Strike and all related
+game assets are trademarks or copyrighted works of Valve Corporation.

@@ -261,6 +261,18 @@ function App() {
     setShowGrid(false)
   }
 
+  const scrollToPositionControls = () => {
+    document
+      .getElementById('position-controls')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const cycleWeapon = () => {
+    const weapons = Object.keys(WEAPONS) as Weapon[]
+    const currentIndex = weapons.indexOf(weapon)
+    setWeapon(weapons[(currentIndex + 1) % weapons.length])
+  }
+
   const fovScale = 1 + ((68 - settings.fov) / 14) * 0.04
   const previewStyle = {
     '--preview-scale': fovScale,
@@ -374,7 +386,7 @@ function App() {
             </div>
           </section>
 
-          <section className="settings-section">
+          <section className="settings-section" id="position-controls">
             <SectionHeading
               index="02"
               title="Viewmodel position"
@@ -590,6 +602,7 @@ function App() {
                 <div className="scene-label">
                   <span>SCENE</span>
                   <b>{WEAPONS[weapon].scene}</b>
+                  <small>{WEAPONS[weapon].source}</small>
                 </div>
                 <div className="scene-switcher">
                   <span className="scene-switcher-label">
@@ -654,6 +667,66 @@ function App() {
                   <small>HAND</small>
                   {hand}
                 </span>
+              </div>
+            </div>
+
+            <div className="mobile-control-deck">
+              <div className="mobile-mode-tabs">
+                <button className="is-active" type="button" aria-label="Preview">
+                  <Eye size={22} />
+                  <span>PREVIEW</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Jump to viewmodel settings"
+                  onClick={scrollToPositionControls}
+                >
+                  <SlidersHorizontal size={22} />
+                  <span>TUNE</span>
+                </button>
+              </div>
+
+              <button
+                className="mobile-loadout-card"
+                type="button"
+                onClick={cycleWeapon}
+              >
+                <span className="mobile-card-kicker">
+                  REAL CS2 CAPTURE <b>0{(Object.keys(WEAPONS) as Weapon[]).indexOf(weapon) + 1}</b>
+                </span>
+                <span className="mobile-card-image">
+                  <img src={WEAPONS[weapon].image} alt="" />
+                </span>
+                <span className="mobile-card-copy">
+                  <small>{WEAPONS[weapon].detail}</small>
+                  <strong>{WEAPONS[weapon].label}</strong>
+                  <em>{WEAPONS[weapon].source}</em>
+                </span>
+                <ChevronRight size={20} />
+              </button>
+
+              <div className="mobile-safe-row">
+                <span>
+                  <i />
+                  COMPETITIVE SAFE
+                </span>
+                <small>NO SV_CHEATS</small>
+              </div>
+
+              <div className="mobile-stat-cards">
+                <button type="button" onClick={scrollToPositionControls}>
+                  <small>VIEWMODEL FOV</small>
+                  <strong>{settings.fov}</strong>
+                  <span>54—68</span>
+                </button>
+                <button type="button" onClick={scrollToPositionControls}>
+                  <small>OFFSET X / Y / Z</small>
+                  <strong>
+                    {formatValue(settings.x)} / {formatValue(settings.y)} /{' '}
+                    {formatValue(settings.z)}
+                  </strong>
+                  <span>{activePreset?.name ?? 'CUSTOM'}</span>
+                </button>
               </div>
             </div>
           </section>
