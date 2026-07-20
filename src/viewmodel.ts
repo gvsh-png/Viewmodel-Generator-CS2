@@ -1,4 +1,3 @@
-export type Weapon = 'knife' | 'rifle' | 'pistol'
 export type Hand = 'right' | 'left'
 export type AspectRatio = '16:9' | '16:10' | '4:3'
 
@@ -21,6 +20,14 @@ export const DEFAULT_SETTINGS: ViewmodelSettings = {
   x: 2.5,
   y: 0,
   z: -1.5,
+}
+
+export const PREVIEW = {
+  background: '/assets/game-bg.jpg',
+  viewmodel: '/assets/rifle-viewmodel.png',
+  scene: 'Inferno · Banana',
+  source: 'Official CS2 media',
+  weapon: 'AK-47',
 }
 
 export const PRESETS: ViewmodelPreset[] = [
@@ -81,39 +88,6 @@ export const PRESETS: ViewmodelPreset[] = [
   },
 ]
 
-export const WEAPONS: Record<
-  Weapon,
-  {
-    label: string
-    detail: string
-    image: string
-    scene: string
-    source: string
-  }
-> = {
-  knife: {
-    label: 'Knife',
-    detail: 'Knife + gloves',
-    image: '/assets/knife-preview.jpg',
-    scene: 'Mills yard',
-    source: 'CS2 Steam capture',
-  },
-  rifle: {
-    label: 'Rifle',
-    detail: 'AK-47',
-    image: '/assets/rifle-preview.jpg',
-    scene: 'Inferno · Banana',
-    source: 'Official CS2 media',
-  },
-  pistol: {
-    label: 'Pistol',
-    detail: 'Desert Eagle',
-    image: '/assets/pistol-preview.jpg',
-    scene: 'Inspect scene',
-    source: 'CS2 Steam capture',
-  },
-}
-
 export interface PreviewOptions {
   hand: Hand
   exposure: number
@@ -124,21 +98,28 @@ export const formatValue = (value: number) => {
   return value.toFixed(1).replace(/\.0$/, '')
 }
 
-export const getPreviewStyle = (
+export const getCanvasStyle = (exposure: number) => ({
+  '--preview-exposure': exposure / 100,
+})
+
+export const getViewmodelTransform = (
   settings: ViewmodelSettings,
-  { hand, exposure }: PreviewOptions,
+  hand: Hand,
 ) => {
-  const fovScale = 1.14 - ((settings.fov - 54) / 14) * 0.28
-  const depthScale = 1 + settings.y * 0.05
-  const offsetX = settings.x * 14
-  const offsetY = settings.z * -16 + settings.y * -10
+  const fovDelta = settings.fov - DEFAULT_SETTINGS.fov
+  const xDelta = settings.x - DEFAULT_SETTINGS.x
+  const yDelta = settings.y - DEFAULT_SETTINGS.y
+  const zDelta = settings.z - DEFAULT_SETTINGS.z
+
+  const scale = 1 - fovDelta * 0.032 + yDelta * -0.04
+  const x = xDelta * 30 + yDelta * 8
+  const y = zDelta * -32 + yDelta * 16
 
   return {
-    '--preview-scale': fovScale * depthScale,
-    '--preview-x': `${offsetX}px`,
-    '--preview-y': `${offsetY}px`,
-    '--preview-exposure': exposure / 100,
-    '--preview-origin-x': hand === 'left' ? '22%' : '78%',
+    '--vm-scale': Math.max(0.55, Math.min(1.32, scale)),
+    '--vm-x': `${x}px`,
+    '--vm-y': `${y}px`,
+    '--vm-mirror': hand === 'left' ? '-1' : '1',
   }
 }
 

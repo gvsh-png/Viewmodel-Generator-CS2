@@ -847,70 +847,32 @@ button.preset-card:hover,
   background: #121512;
 }
 
-.weapon-tabs {
+.preview-weapon-label {
+  min-width: 215px;
   display: flex;
-}
-
-.weapon-tabs button {
-  position: relative;
-  min-width: 142px;
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  grid-template-rows: 1fr 1fr;
-  align-content: center;
-  column-gap: 7px;
-  padding: 15px 20px;
-  border: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 22px;
   border-right: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
-  text-align: left;
-  cursor: pointer;
 }
 
-.weapon-tabs button::after {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  content: '';
-  background: transparent;
-}
-
-.weapon-tabs button:hover {
-  background: #171b17;
-}
-
-.weapon-tabs button.is-active {
-  color: var(--text);
-  background: #171b17;
-}
-
-.weapon-tabs button.is-active::after {
-  background: var(--signal);
-}
-
-.weapon-tabs button span {
-  grid-row: 1 / span 2;
-  align-self: center;
+.preview-weapon-label span {
   color: var(--muted-2);
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-}
-
-.weapon-tabs button b {
-  align-self: end;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.weapon-tabs button small {
-  align-self: start;
-  color: var(--muted-2);
   font-size: 7px;
+  letter-spacing: 0.07em;
+}
+
+.preview-weapon-label b {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+}
+
+.preview-weapon-label small {
+  color: var(--muted);
+  font-size: 8px;
 }
 
 .preview-meta {
@@ -967,36 +929,48 @@ button.preset-card:hover,
   isolation: isolate;
 }
 
-.preview-canvas > img {
+.preview-bg {
   position: absolute;
-  inset: -2%;
-  z-index: -2;
-  width: 104%;
-  height: 104%;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  transform-origin: var(--preview-origin-x) 86%;
+  object-position: center;
   filter: brightness(var(--preview-exposure)) saturate(0.92) contrast(1.03);
-  transform: translate(var(--preview-x), var(--preview-y))
-    scale(var(--preview-scale));
-  animation: image-enter 350ms ease both;
-  transition:
-    filter 160ms ease,
-    transform 160ms ease;
 }
 
-.preview-canvas.hand-left > img {
-  transform-origin: var(--preview-origin-x) 86%;
-  transform: translate(calc(var(--preview-x) * -1), var(--preview-y))
-    scaleX(-1) scale(var(--preview-scale));
+.viewmodel-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-@keyframes image-enter {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.viewmodel-sprite {
+  position: absolute;
+  right: -3%;
+  bottom: -10%;
+  width: 88%;
+  max-width: none;
+  height: auto;
+  transform-origin: 92% 94%;
+  transform: translate(var(--vm-x), var(--vm-y)) scale(var(--vm-scale));
+  transition: transform 140ms ease;
+  will-change: transform;
+}
+
+.preview-canvas.hand-left .viewmodel-sprite {
+  right: auto;
+  left: -1%;
+  transform-origin: 12% 94%;
+  transform: translate(calc(var(--vm-x) * -1), var(--vm-y))
+    scaleX(var(--vm-mirror)) scale(var(--vm-scale));
+}
+
+.preview-canvas.hand-right .viewmodel-sprite {
+  transform: translate(var(--vm-x), var(--vm-y)) scale(var(--vm-scale));
 }
 
 .canvas-shade {
@@ -1147,96 +1121,6 @@ button.preset-card:hover,
   font-size: 5px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-
-.scene-switcher {
-  position: absolute;
-  top: 29px;
-  right: 29px;
-  width: 142px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 7px;
-  border: 1px solid rgba(218, 225, 213, 0.32);
-  background: rgba(9, 12, 9, 0.83);
-}
-
-.scene-switcher-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1px 1px 3px;
-  color: #b6bdb2;
-  font-family: 'DM Mono', monospace;
-  font-size: 6px;
-  letter-spacing: 0.07em;
-}
-
-.scene-switcher-label b {
-  color: var(--signal);
-  font-size: 6px;
-  font-weight: 500;
-}
-
-.scene-switcher button {
-  position: relative;
-  height: 67px;
-  overflow: hidden;
-  padding: 0;
-  border: 1px solid rgba(218, 225, 213, 0.28);
-  background: #111511;
-  cursor: pointer;
-}
-
-.scene-switcher button::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-  background: rgba(6, 8, 6, 0.18);
-  transition: background 140ms ease;
-}
-
-.scene-switcher button:hover::after,
-.scene-switcher button.is-active::after {
-  background: transparent;
-}
-
-.scene-switcher button.is-active {
-  border-color: var(--signal);
-}
-
-.scene-switcher button img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  filter: saturate(0.8) contrast(1.04);
-}
-
-.scene-switcher button span {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 5px;
-  background: rgba(7, 9, 7, 0.77);
-  color: #e1e5dd;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.scene-switcher button span small {
-  color: var(--signal);
-  font-family: 'DM Mono', monospace;
-  font-size: 6px;
 }
 
 .preview-readout {
@@ -1656,12 +1540,6 @@ button.preset-card:hover,
     padding: 0 13px;
   }
 
-  .weapon-tabs button {
-    min-width: 122px;
-    padding-right: 13px;
-    padding-left: 13px;
-  }
-
   .preview-meta span:first-child {
     display: none;
   }
@@ -1841,15 +1719,10 @@ button.preset-card:hover,
     border-left: 0;
   }
 
-  .preview-canvas > img {
-    inset: 0;
+  .viewmodel-sprite {
     width: 100%;
-    height: 100%;
-    object-position: center;
-  }
-
-  .preview-canvas.hand-left > img {
-    object-position: center;
+    right: -4%;
+    bottom: -12%;
   }
 
   .preview-readout {
@@ -1864,27 +1737,6 @@ button.preset-card:hover,
 
   .preview-disclaimer {
     display: none;
-  }
-
-  .scene-switcher {
-    top: 12px;
-    right: 12px;
-    width: 82px;
-    gap: 3px;
-    padding: 3px;
-  }
-
-  .scene-switcher-label {
-    display: none;
-  }
-
-  .scene-switcher button {
-    height: 40px;
-  }
-
-  .scene-switcher button span {
-    padding: 3px 4px;
-    font-size: 6px;
   }
 
   .scene-label {
