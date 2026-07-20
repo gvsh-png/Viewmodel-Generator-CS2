@@ -1,0 +1,40 @@
+{
+  "name": "viewmodel-lab",
+  "version": "1.0.0",
+  "description": "A polished CS2 viewmodel command generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gvsh-png/Viewmodel-Generator-CS2.git"
+  },
+  "keywords": [
+    "counter-strike",
+    "cs2",
+    "viewmodel"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gvsh-png/Viewmodel-Generator-CS2/issues"
+  },
+  "homepage": "https://github.com/gvsh-png/Viewmodel-Generator-CS2#readme",
+  "dependencies": {
+    "lucide-react": "^1.25.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.5"
+  }
+}
